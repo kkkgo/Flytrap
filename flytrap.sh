@@ -74,19 +74,17 @@ clean_ipt() {
 }
 
 clean_trap() {
-    if [ "$wallcmd" = "iptables" ]; then
-        clean_ipt "INPUT.+""$wan_name"".+multiport.+flytrap_blacklist" "INPUT->flytrap_blacklist(ipset) IPv4" "4"
-        clean_ipt "FORWARD.+""$wan_name"".+multiport.+flytrap_blacklist" "INPUT->flytrap_blacklist(ipset) IPv4" "4"
-        clean_ipt "INPUT.+match-set.+flytrap_blacklist.+DROP" "flytrap_blacklist->INPUT(DROP) IPv4" "4"
-        clean_ipt "FORWARD.+match-set.+flytrap_blacklist.+DROP" "flytrap_blacklist->FORWARD(DROP) IPv4" "4"
-        clean_ipt "OUTPUT.+match-set.+flytrap_blacklist.+DROP" "flytrap_blacklist->OUTPUT(DROP) IPv4" "4"
-        if [ "$v6" != "no" ]; then
-            clean_ipt "INPUT.+""$wan_name"".+multiport.+flytrap6_blacklist" "INPUT->flytrap6_blacklist(ipset) IPv6" "6"
-            clean_ipt "FORWARD.+""$wan_name"".+multiport.+flytrap6_blacklist" "INPUT->flytrap6_blacklist(ipset) IPv6" "6"
-            clean_ipt "INPUT.+match-set.+flytrap6_blacklist.+DROP" "flytrap6_blacklist->INPUT(DROP) IPv6" "6"
-            clean_ipt "FORWARD.+match-set.+flytrap6_blacklist.+DROP" "flytrap6_blacklist->FORWARD(DROP) IPv6" "6"
-            clean_ipt "OUTPUT.+match-set.+flytrap6_blacklist.+DROP" "flytrap6_blacklist->OUTPUT(DROP) IPv6" "6"
-        fi
+    clean_ipt "INPUT.+""$wan_name"".+multiport.+flytrap_blacklist" "INPUT->flytrap_blacklist(ipset) IPv4" "4"
+    clean_ipt "FORWARD.+""$wan_name"".+multiport.+flytrap_blacklist" "INPUT->flytrap_blacklist(ipset) IPv4" "4"
+    clean_ipt "INPUT.+match-set.+flytrap_blacklist.+DROP" "flytrap_blacklist->INPUT(DROP) IPv4" "4"
+    clean_ipt "FORWARD.+match-set.+flytrap_blacklist.+DROP" "flytrap_blacklist->FORWARD(DROP) IPv4" "4"
+    clean_ipt "OUTPUT.+match-set.+flytrap_blacklist.+DROP" "flytrap_blacklist->OUTPUT(DROP) IPv4" "4"
+    if [ "$v6" != "no" ]; then
+        clean_ipt "INPUT.+""$wan_name"".+multiport.+flytrap6_blacklist" "INPUT->flytrap6_blacklist(ipset) IPv6" "6"
+        clean_ipt "FORWARD.+""$wan_name"".+multiport.+flytrap6_blacklist" "INPUT->flytrap6_blacklist(ipset) IPv6" "6"
+        clean_ipt "INPUT.+match-set.+flytrap6_blacklist.+DROP" "flytrap6_blacklist->INPUT(DROP) IPv6" "6"
+        clean_ipt "FORWARD.+match-set.+flytrap6_blacklist.+DROP" "flytrap6_blacklist->FORWARD(DROP) IPv6" "6"
+        clean_ipt "OUTPUT.+match-set.+flytrap6_blacklist.+DROP" "flytrap6_blacklist->OUTPUT(DROP) IPv6" "6"
     fi
 }
 
