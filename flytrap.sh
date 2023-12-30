@@ -118,10 +118,10 @@ list_ips() {
     list_type=$1
     if [ "$list_type" = "6" ]; then
         if [ "$v6" != "no" ]; then
-            stripIP "$(ipset list flytrap6_blacklist -s)" "6"
+            stripIP "$(ipset list flytrap6_blacklist)" "6"
         fi
     else
-        stripIP "$(ipset list flytrap_blacklist -s)" "4"
+        stripIP "$(ipset list flytrap_blacklist)" "4"
     fi
 }
 
