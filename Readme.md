@@ -12,6 +12,8 @@ wan_name="pppoe-wan"
 trap_ports="21,22,23,3389"
 # 定义是否也部署IPv6，yes/no
 trap6="no"
+# IP封禁时间，0为一直封禁，值大于0超时从名单中移除（单位：秒）
+unlock="0"
 #Customizable option end
 ```
 改好脚本直接执行`sh flytrap.sh`就可以帮你加上规则。加入开机运行一次即可。  
@@ -28,10 +30,10 @@ sh flytrap.sh add xxxxx
 sh flytrap.sh del xxxxx
 # 删除所有坏蛋IP地址
 sh flytrap.sh delall
-# 清空flytrap相关的iptables规则
+# 清空flytrap相关的iptables规则和集合
 sh flytrap.sh clean
 ```
 如果需要修改端口`trap_ports`，修改完了直接执行即可，会自动清除旧规则。  
 如果需要修改接口名`wan_name`，修改前可以执行`sh flytrap.sh clean`清除相关接口的规则。  
-可以加个计划任务定期运行`sh flytrap.sh delall`清空列表，存太多旧数据意义不大（也许有一天能存满）。  
+建议设置unlock选项的时间，或者加个计划任务定期运行`sh flytrap.sh delall`清空列表，存太多旧数据意义不大。  
 脚本仅需依赖ipset和iptables命令。一些系统可能自带的防火墙命令是nft，由于nft并不像iptables那样有默认的表，可以根据提供的脚本和思路，按需修改。   
