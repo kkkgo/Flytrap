@@ -107,7 +107,7 @@ add_trap() {
 
 stripIP() {
     if [ "$2" = "6" ]; then
-        echo "$1" | grep -Eo "$IPREX6" | grep -Eo "$PUBIPREX6"
+        echo "$1" | grep -Eo "$IPREX6"
     else
         echo "$1" | grep -Eo "$IPREX4"
     fi
