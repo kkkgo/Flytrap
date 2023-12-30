@@ -31,5 +31,6 @@ sh flytrap.sh delall
 # 清空flytrap相关的iptables规则
 sh flytrap.sh clean
 ```
-
+如果需要修改端口`trap_ports`，修改完了直接执行即可，会自动清除旧规则。  
+如果需要修改接口名`wan_name`，修改前可以执行`sh flytrap.sh clean`清除相关接口的规则。  
 脚本仅需依赖ipset和iptables命令。一些系统可能自带的防火墙命令是nft，由于nft并不像iptables那样有默认的表，可以根据提供的脚本和思路，按需修改。   
