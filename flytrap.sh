@@ -39,14 +39,14 @@ creat_ipset() {
         echo "flytrap ipset ipv4 has already been created."
     else
         echo Creating flytrap ipset ipv4...
-        ipset create flytrap_blacklist hash:ip
+        ipset create flytrap_blacklist hash:net
     fi
     if [ "$v6" != "no" ]; then
         if ipset list -n | grep -q flytrap6_blacklist; then
             echo "flytrap ipset ipv6 has already been created."
         else
             echo Creating flytrap ipset ipv6...
-            ipset create flytrap6_blacklist hash:ip family inet6
+            ipset create flytrap6_blacklist hash:net family inet6
             if [ "$?" != "0" ]; then
                 export v6="no"
             fi
