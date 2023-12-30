@@ -3,6 +3,7 @@
 wan_name="pppoe-wan"
 trap_ports="21,22,23,3389"
 trap6="no"
+unlock="0"
 #Customizable option end
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/bin:/opt/sbin:$PATH"
@@ -39,14 +40,22 @@ creat_ipset() {
         echo "flytrap ipset ipv4 has already been created."
     else
         echo Creating flytrap ipset ipv4...
-        ipset create flytrap_blacklist hash:net
+        if [ "$unlock" -gt 0 ]; then
+            ipset create flytrap_blacklist hash:net timeout $unlock
+        else
+            ipset create flytrap_blacklist hash:net
+        fi
     fi
     if [ "$v6" != "no" ]; then
         if ipset list -n | grep -q flytrap6_blacklist; then
             echo "flytrap ipset ipv6 has already been created."
         else
             echo Creating flytrap ipset ipv6...
-            ipset create flytrap6_blacklist hash:net family inet6
+            if [ "$unlock" -gt 0 ]; then
+                ipset create flytrap6_blacklist hash:net family inet6 timeout $unlock
+            else
+                ipset create flytrap6_blacklist hash:net family inet6
+            fi
             if [ "$?" != "0" ]; then
                 export v6="no"
             fi
@@ -79,12 +88,18 @@ clean_trap() {
     clean_ipt "INPUT.+match-set.+flytrap_blacklist.+DROP" "flytrap_blacklist->INPUT(DROP) IPv4" "4"
     clean_ipt "FORWARD.+match-set.+flytrap_blacklist.+DROP" "flytrap_blacklist->FORWARD(DROP) IPv4" "4"
     clean_ipt "OUTPUT.+match-set.+flytrap_blacklist.+DROP" "flytrap_blacklist->OUTPUT(DROP) IPv4" "4"
+    if ipset list -n | grep -q flytrap_blacklist; then
+        ipset destroy flytrap_blacklist
+    fi
     if [ "$v6" != "no" ]; then
         clean_ipt "INPUT.+""$wan_name"".+multiport.+flytrap6_blacklist" "INPUT->flytrap6_blacklist(ipset) IPv6" "6"
         clean_ipt "FORWARD.+""$wan_name"".+multiport.+flytrap6_blacklist" "INPUT->flytrap6_blacklist(ipset) IPv6" "6"
         clean_ipt "INPUT.+match-set.+flytrap6_blacklist.+DROP" "flytrap6_blacklist->INPUT(DROP) IPv6" "6"
         clean_ipt "FORWARD.+match-set.+flytrap6_blacklist.+DROP" "flytrap6_blacklist->FORWARD(DROP) IPv6" "6"
         clean_ipt "OUTPUT.+match-set.+flytrap6_blacklist.+DROP" "flytrap6_blacklist->OUTPUT(DROP) IPv6" "6"
+    fi
+    if ipset list -n | grep -q flytrap6_blacklist; then
+        ipset destroy flytrap6_blacklist
     fi
 }
 
@@ -200,6 +215,7 @@ date +"%Y-%m-%d %H:%M:%S %Z"
 echo "wan_name=""$wan_name"
 echo "trap_ports=""$trap_ports"
 echo "trap6=""$trap6"
+echo "unlock=""$unlock"
 clean_trap
 creat_ipset
 add_trap
